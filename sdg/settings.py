@@ -25,8 +25,8 @@ SECRET_KEY = 'z+rvy*7=vw+g%9094q+lm2_q@sdo20(ya-n+v(0sswzf-3rx93'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://damp-everglades-17968.herokuapp.com']
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+ALLOWED_HOSTS = ['localhost','https://damp-everglades-17968.herokuapp.com']
+#SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 # Application definition
