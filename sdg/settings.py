@@ -61,7 +61,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
+    
+    #To run this API Locally on your machine, comment out the Middleware option below.
+    #It is left uncommented so that the APIview on a browser will have css styling ,
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
