@@ -1,11 +1,8 @@
-from rest_framework import generics
+from rest_framework import viewsets
 from .models import Estimator
 from .serializers import EstimatorSerializer
 
 
-class ListTodo(generics.ListAPIView):
-    queryset = Estimator.objects.all()
-    serializer_class = EstimatorSerializer
-class DetailTodo(generics.RetrieveAPIView):
+class EstimatorViewSet (viewsets.ModelViewSet):
     queryset = Estimator.objects.all()
     serializer_class = EstimatorSerializer

@@ -1,7 +1,10 @@
-from django.urls import path
-from .views import ListTodo, DetailTodo
+from django.urls import path,include
+from .views import EstimatorViewSet
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register (r'estimator',EstimatorViewSet)
 
 urlpatterns = [
-path('<int:pk>/', DetailTodo.as_view()),
-path('', ListTodo.as_view()),
+path('api/v1/on-covid-19/', include(router.urls)),
 ]

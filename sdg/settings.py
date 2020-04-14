@@ -26,7 +26,7 @@ SECRET_KEY = 'z+rvy*7=vw+g%9094q+lm2_q@sdo20(ya-n+v(0sswzf-3rx93'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['damp-everglades-17968.herokuapp.com']
+ALLOWED_HOSTS = ['localhost','damp-everglades-17968.herokuapp.com']
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
@@ -46,7 +46,11 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
 'DEFAULT_PERMISSION_CLASSES': [
 'rest_framework.permissions.AllowAny',
-]
+],
+'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
 }
 
 MIDDLEWARE = [
