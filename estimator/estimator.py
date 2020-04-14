@@ -1,4 +1,4 @@
-def estimator_function(input_data):
+def estimator_function (input_data):
     impact = {}
     severeImpact = {}
     ###Normalizing the duration to just days
@@ -16,12 +16,12 @@ def estimator_function(input_data):
   
     ###CHALLENGE 2
     ##SEVEREIMPACT
-    severeImpact['severeCasesByRequestedTime']=severeImpact['infectionsByRequestedTime']*0.15
+    severeImpact['severeCasesByRequestedTime']=int(severeImpact['infectionsByRequestedTime']*0.15)
   
     severeImpact['hospitalBedsByRequestedTime']=available_beds(input_data['totalHospitalBeds'],severeImpact['severeCasesByRequestedTime'])
     
     ##IMPACT
-    impact['severeCasesByRequestedTime']=impact['infectionsByRequestedTime']*0.15
+    impact['severeCasesByRequestedTime']=int(impact['infectionsByRequestedTime']*0.15)
     
     impact['hospitalBedsByRequestedTime']=available_beds(input_data['totalHospitalBeds'],impact['severeCasesByRequestedTime'])
     
@@ -31,17 +31,17 @@ def estimator_function(input_data):
     factor= money_lost(duration, input_data['avgDailyIncomeInUSD'], input_data['avgDailyIncomePopulation'])
     
     ##SEVEREIMPACT
-    severeImpact['casesForICUByRequestedTime']=0.05*severeImpact['infectionsByRequestedTime']
-    severeImpact['casesForVentilatorsByRequestedTime']=0.02*severeImpact['infectionsByRequestedTime']
-    severeImpact['dollarsInFlight']=severeImpact['infectionsByRequestedTime']*factor
+    severeImpact['casesForICUByRequestedTime']=int(0.05*severeImpact['infectionsByRequestedTime'])
+    severeImpact['casesForVentilatorsByRequestedTime']=int(0.02*severeImpact['infectionsByRequestedTime'])
+    severeImpact['dollarsInFlight']=int(severeImpact['infectionsByRequestedTime']*factor)
     
     ##IMPACT
-    impact['casesForICUByRequestedTime']=0.05*impact['infectionsByRequestedTime']
-    impact['casesForVentilatorsByRequestedTime']=0.02*impact['infectionsByRequestedTime']
-    impact['dollarsInFlight']=impact['infectionsByRequestedTime']*factor
+    impact['casesForICUByRequestedTime']=int(0.05*impact['infectionsByRequestedTime'])
+    impact['casesForVentilatorsByRequestedTime']=int(0.02*impact['infectionsByRequestedTime'])
+    impact['dollarsInFlight']=int(impact['infectionsByRequestedTime']*factor)
     
     
-    output_data = {'input_data':input_data, 'impact':impact, 'severeImpact': severeImpact}
+    output_data = {'data':input_data, 'impact':impact, 'severeImpact': severeImpact}
     return output_data
 
 def duration_normaliser(duration ,value):
@@ -57,7 +57,7 @@ def duration_normaliser(duration ,value):
 def available_beds(totalbeds,severecases):
   #expected 35% bed availability in hospitals
     beds_available=(0.35*totalbeds)-severecases
-    return beds_available
+    return int(beds_available)
 
 def money_lost(days,avgIncome,avgIncomePopulation):
-  return avgIncome*days*avgIncomePopulation
+  return (avgIncome*avgIncomePopulation)/days
