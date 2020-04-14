@@ -1,10 +1,10 @@
-from django.urls import path,include
-from .views import EstimatorViewSet
-from rest_framework import routers
-
-router = routers.DefaultRouter()
-router.register (r'estimator',EstimatorViewSet)
+from django.urls import path
+from rest_framework.urlpatterns import format_suffix_patterns
+from . import views
 
 urlpatterns = [
-path('api/v1/on-covid-19/', include(router.urls)),
+    path('api/v1/on-covid-19/', views.EstimatorListView.as_view()),
+    path('api/v1/on-covid-19/<int:pk>/', views.EstimatorDetailView.as_view()),
 ]
+urlpatterns = format_suffix_patterns(urlpatterns)
+
