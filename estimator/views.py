@@ -9,6 +9,7 @@ from .estimator import estimator_function
 from rest_framework import status,generics
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
+from django.shortcuts import get_object_or_404
 
 
 import time
@@ -63,6 +64,10 @@ class EstimatorListView (APIView):
             serializer.save()
             output_data=estimator_function(serializer.data)
 
+            output_serializer = OutputSerializer(data=output_data)
+            if output_serializer.is_valid():
+                output_serializer.save()
+
             impact_serializer=ImpactSerializer(data=output_data['impact'])
             if impact_serializer.is_valid():
                 impact_serializer.save()
@@ -71,10 +76,9 @@ class EstimatorListView (APIView):
             if severeImpact_serializer.is_valid():
                 severeImpact_serializer.save()
             
-            output_serializer = OutputSerializer(data=output_data)
-            if output_serializer.is_valid():
-                output_serializer.save()
-            return Response ({'input_data':output_serializer.data['input_data'],"impact":output_serializer.data['impact'],'severeImpact':output_serializer.data['severeImpact']})
+
+            # return Response ({'input_data':output_serializer.data['input_data'],"impact":output_serializer.data['impact'],'severeImpact':output_serializer.data['severeImpact']})
+            return Response(output_serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -89,28 +93,58 @@ class EstimatorDetailView(APIView):
             Response(status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, pk, format=None):
-        estimator = self.get_object(pk)
+        estimator = get_object_or_404(Estimator,pk=pk)
         serializer = EstimatorSerializer(estimator)
-        impact_serializer = ImpactSerializer(Impact.objects.get(pk=pk))
-        severeImpact_serializer = SevereImpactSerializer (SevereImpact.objects.get(pk=pk))
+
+        impact = get_object_or_404(Impact, pk=pk)
+        impact_serializer = ImpactSerializer(impact)
+
+        severeimpact = get_object_or_404(SevereImpact, pk=pk)
+        severeImpact_serializer = SevereImpactSerializer (severeimpact)
+
         return Response({'input_data':serializer.data,'impact':impact_serializer.data,'severeImpact':severeImpact_serializer.data})
 
+
+
     def put(self, request, pk, format=None):
-        estimator = self.get_object(pk)
+        estimator = get_object_or_404(Estimator,pk=pk)
         serializer = EstimatorSerializer(estimator, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+            # output_data = estimator_function(serializer.data)
+            # id= serializer.data['id']
+            # Impact.objects.filter(pk=id).update(
+            #     output_data['impact']["currentlyInfected"], 
+            #     output_data['impact']["infectionsByRequestedTime"],
+            #     output_data['impact']["severeCasesByRequestedTime"],
+            #     output_data['impact']["hospitalBedsByRequestedTime"],
+            #     output_data['impact']["casesForICUByRequestedTime"],
+            #     output_data['impact']["casesForVentilatorsByRequestedTime"],
+            #     output_data['impact']["dollarsInFlight"])
+            
+            # SevereImpact.objects.filter(pk=id).update(
+            #     output_data['severeImpact']["currentlyInfected"],
+            #     output_data['severeImpact']["infectionsByRequestedTime"],
+            #     output_data['severeImpact']["severeCasesByRequestedTime"],
+            #     output_data['severeImpact']["hospitalBedsByRequestedTime"],
+            #     output_data['severeImpact']["casesForICUByRequestedTime"],
+            #     output_data['severeImpact']["casesForVentilatorsByRequestedTime"],
+            #     output_data['severeImpact']["dollarsInFlight"])
+            
+            # return Response({'input_data': serializer.data, 'impact':output_data.impact,'severeImpact': output_data.severeImpact})
+            return Response (serializer.data)
+        return JsonResponse({"message":"Invalid Input"}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        estimator = self.get_object(pk)
+        estimator = get_object_or_404(Estimator,pk=pk)
+        impact = get_object_or_404(Impact, pk=pk)
+        severeImpact = get_object_or_404(SevereImpact, pk=pk)
+        
         estimator.delete()
-        impact = Impact.objects.get(pk=pk)
         impact.delete()
-        severeImpact=SevereImpact.objects.get(pk=pk)
         severeImpact.delete()
-        #return Response(status=status.HTTP_204_NO_CONTENT)
+        return JsonResponse({"message":"Successfully Deleted"},status=status.HTTP_204_NO_CONTENT)
 
 
     

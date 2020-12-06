@@ -1,4 +1,21 @@
 def estimator_function (input_data):
+    """
+                input_data is a dictionary of            
+                    "name": ,
+                    "avgAge": ,
+                    "avgDailyIncomeInUSD": ,
+                    "avgDailyIncomePopulation": ,
+                    "periodType": ,
+                    "timeToElapse": ,
+                    "reportedCases": ,
+                    "population": ,
+                    "totalHospitalBeds": 
+                
+                This Fuction is the main engine of the API, it performs the necessary
+                computations and estimations of the api and returns a dictionary that 
+                contains the input_data, impact (estimated impact of virus), 
+                and severeImpact (estimated severe impact of the virus).
+    """
     impact = {}
     severeImpact = {}
     ###Normalizing the duration to just days
@@ -41,23 +58,33 @@ def estimator_function (input_data):
     impact['dollarsInFlight']=int(impact['infectionsByRequestedTime']*factor)
     
     
-    output_data = {'data':input_data, 'impact':impact, 'severeImpact': severeImpact}
+    output_data = {'input_data':input_data, 'impact':impact, 'severeImpact': severeImpact}
     return output_data
 
 def duration_normaliser(duration ,value):
-    if duration == "months" or duration =="month":
-        value *= 30
-        return value
-    elif duration == "weeks" or duration=="week":
-        value *= 7
-        return value
+    hash={"months":30,"month":30,"weeks":7,"week":7,"days":1,"day":1}
+    if duration in hash:
+        if value<0:
+            return hash[duration]
+        else:
+            value *= hash[duration]
+            return value
     else:
-        return value
+        if value>=0:
+            return value
+        else:
+            return 0
 
 def available_beds(totalbeds,severecases):
-  #expected 35% bed availability in hospitals
-    beds_available=(0.35*totalbeds)-severecases
-    return int(beds_available)
+    #expected 35% bed availability in hospitals
+    if totalbeds>=0 and severecases>=0:
+        beds_available=(0.35*totalbeds)-severecases
+        return int(beds_available)
+    else:
+        return 0
 
 def money_lost(days,avgIncome,avgIncomePopulation):
-  return (avgIncome*avgIncomePopulation)/days
+    if days>0:
+        return (avgIncome*avgIncomePopulation)/days
+    else:
+        return 0
